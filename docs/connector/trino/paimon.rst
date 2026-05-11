@@ -89,4 +89,4 @@ and then use kyuubi trino sql engine to query the table with the following SQL `
 .. _Official Documentation: https://paimon.apache.org/docs/master/
 .. _Source Code: https://github.com/JingsongLi/paimon-trino
 .. _Pre-bundled Hadoop: https://flink.apache.org/downloads/#additional-components
-.. _Apache Paimon Trino README: https://github.com/JingsongLi/paimon-trino#readme
+.. _Apache Paimon Trino README: https://github.com/apache/paimon-trino
