@@ -87,6 +87,6 @@ and then use kyuubi trino sql engine to query the table with the following SQL `
 .. _Apache Paimon multi engine support: https://paimon.apache.org/docs/master/engines/overview/
 .. _Apache Paimon Engines Flink Quick Start: https://paimon.apache.org/docs/master/engines/flink/#quick-start
 .. _Official Documentation: https://paimon.apache.org/docs/master/
-.. _Source Code: https://github.com/JingsongLi/paimon-trino
+.. _Source Code: https://github.com/apache/paimon-trino
 .. _Pre-bundled Hadoop: https://flink.apache.org/downloads/#additional-components
 .. _Apache Paimon Trino README: https://github.com/apache/paimon-trino
