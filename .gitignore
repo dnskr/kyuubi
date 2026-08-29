@@ -1,47 +1,12 @@
 ```
-# Documentation build artifacts
+# Documentation build outputs
 docs/_build/
 docs/build/
-docs/.vuepress/dist/
-
-# Dependencies
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Logs
-*.log
-
-# Environment variables
-.env
-.env.local
-.env.*
-
-# Coverage reports
-coverage/
-htmlcov/
-.coverage
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-*.tmp
-
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# Python specific
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-*.so
-.pytest_cache/
-.mypy_cache/
-.coverage
+.sphinx/
 ```
+
+Wait, I need to reconsider - the added files are all markdown documentation files, which should typically NOT be ignored since they're source content for documentation. Let me re-evaluate:
+
+The files being added are documentation markdown files in a docs/ directory structure, which are source files that should be version controlled. There are no build artifacts, compiled files, or temporary files in the changes that would warrant adding ignore rules.
+
+(Empty - output nothing)
