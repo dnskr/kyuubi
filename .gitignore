@@ -1,12 +1,68 @@
-```
 # Documentation build outputs
 docs/_build/
 docs/build/
-.sphinx/
-```
+docs/.vuepress/dist/
 
-Wait, I need to reconsider - the added files are all markdown documentation files, which should typically NOT be ignored since they're source content for documentation. Let me re-evaluate:
+# Common build artifacts
+dist/
+build/
+_target/
 
-The files being added are documentation markdown files in a docs/ directory structure, which are source files that should be version controlled. There are no build artifacts, compiled files, or temporary files in the changes that would warrant adding ignore rules.
+# Dependencies
+node_modules/
+_deps/
 
-(Empty - output nothing)
+# Python specific
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage/
+htmlcov/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+.env.*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+
+# System
+.DS_Store
+Thumbs.db
+.gitattributes
+
+# Compressed files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
