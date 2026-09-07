@@ -15,17 +15,31 @@
   - limitations under the License.
 -->
 
-# Kyuubi Security Overview
+# Deploying Kyuubi
 
-Securing Kyuubi involves enabling authentication(authn), authorization(authz)
-and encryption, etc.
+In this section, you will learn how to deploy Kyuubi against different platforms.
+
+## Basics
 
 ```{toctree}
 :maxdepth: 2
+:glob:
 
-Authentication <authentication>
-Authorization <authorization/index>
-kinit
-hadoop_credentials_manager
-internal_secure_access
+kyuubi_on_kubernetes
+hive_metastore
+high_availability_guide
+migration-guide
+```
+
+## Engines
+
+```{toctree}
+:maxdepth: 2
+:glob:
+
+engine_on_yarn
+engine_on_kubernetes
+engine_share_level
+engine_lifecycle
+spark/index
 ```

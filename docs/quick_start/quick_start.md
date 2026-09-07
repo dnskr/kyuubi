@@ -1,51 +1,54 @@
 <!--
-- Licensed to the Apache Software Foundation (ASF) under one or more
-- contributor license agreements.  See the NOTICE file distributed with
-- this work for additional information regarding copyright ownership.
-- The ASF licenses this file to You under the Apache License, Version 2.0
-- (the "License"); you may not use this file except in compliance with
-- the License.  You may obtain a copy of the License at
--
--   http://www.apache.org/licenses/LICENSE-2.0
--
-- Unless required by applicable law or agreed to in writing, software
-- distributed under the License is distributed on an "AS IS" BASIS,
-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-- See the License for the specific language governing permissions and
-- limitations under the License.
+  - Licensed to the Apache Software Foundation (ASF) under one or more
+  - contributor license agreements.  See the NOTICE file distributed with
+  - this work for additional information regarding copyright ownership.
+  - The ASF licenses this file to You under the Apache License, Version 2.0
+  - (the "License"); you may not use this file except in compliance with
+  - the License.  You may obtain a copy of the License at
+  -
+  -   http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
 -->
 
 # Getting Started
 
 :::{note}
-This page covers how to start with kyuubi quickly on your laptop in about 3~5 minutes.
+This page covers how to start with kyuubi quickly on your laptop in about
+3~5 minutes.
 :::
 
 ## Requirements
 
 For quick start deployment, we need to prepare the following stuffs:
 
-- A **client** that connects and submits queries to the server. Here, we use the kyuubi beeline for demonstration.
+- A **client** that connects and submits queries to the server. Here, we use
+  the kyuubi beeline for demonstration.
 - A **server** that serves clients and manages engines.
-- An **engine** that is used to instantiate query execution environments. Here we use Spark for demonstration.
+- An **engine** that is used to instantiate query execution environments. Here
+  we use Spark for demonstration.
 
 These essential components are JVM-based applications. So, the JRE needs to be
 pre-installed and the `JAVA_HOME` is correctly set to each component.
 
-|   Component   |    Role    |      Version       |                        Remarks                         |
-|---------------|------------|--------------------|--------------------------------------------------------|
-| **Java**      | JRE        | 8, 11, 17          | Officially released against JDK8                       |
-| **Kyuubi**    | Gateway    | {{ release }}      | Kyuubi Server                                          |
-|               | Engine lib |                    | Kyuubi Engine                                          |
-|               | Beeline    |                    | Kyuubi Beeline                                         |
-| **Spark**     | Engine     | 3.5, 4.0 to 4.2    | A Spark distribution                                   |
-| **Flink**     | Engine     | 1.20, 2.0 to 2.3   | A Flink distribution                                   |
-| **Trino**     | Engine     | N/A                | A Trino cluster allows to access via trino-client v411 |
-| **Doris**     | Engine     | N/A                | A Doris cluster                                        |
-| **Hive**      | Engine     | 2.1-cdh6, 2.3, 3.1 | A Hive distribution                                    |
-|               | Metastore  | N/A                | An optional engine-versioned metadata store            |
-| **Zookeeper** | HA         | >=3.4.x            |                                                        |
-| **Disk**      | Storage    | N/A                | N/A                                                    |
+| Component | Role       | Version                  | Remarks                                                 |
+|-----------|------------|--------------------------|---------------------------------------------------------|
+| **Java**  | JRE        | 8, 11, 17                | Officially released against JDK8                        |
+| **Kyuubi**| Gateway    | \|release\|              | - Kyuubi Server                                         |
+|           | Engine lib |                          | - Kyuubi Engine                                         |
+|           | Beeline    |                          | - Kyuubi Beeline                                        |
+| **Spark** | Engine     | 3.5, 4.0 to 4.2          | A Spark distribution                                    |
+| **Flink** | Engine     | 1.20, 2.0 to 2.3         | A Flink distribution                                    |
+| **Trino** | Engine     | N/A                      | A Trino cluster allows to access via trino-client v411  |
+| **Doris** | Engine     | N/A                      | A Doris cluster                                         |
+| **Hive**  | Engine     | - 2.1-cdh6, 2.3, 3.1     | - A Hive distribution                                   |
+|           | Metastore  | - N/A                    | - An optional and external metadata store, whose version is decided by engines |
+| **Zookeeper** | HA     | >=3.4.x                  |                                                         |
+| **Disk**  | Storage    | N/A                      | N/A                                                     |
 
 The other internal or external parts listed in the above sheet can be used
 individually or all together. For example, you can use Kyuubi, Spark and Flink
@@ -62,7 +65,7 @@ In what follows, we will only use Kyuubi and Spark.
 
 This following instructions are based on binary releases. If you start with
 source releases, please refer to the page for
-[building kyuubi](../contributing/code/distribution.md).
+[building kyuubi](../develop_tools/distribution.html).
 :::
 
 ### Install Kyuubi
@@ -73,13 +76,11 @@ most recent stable release to start.
 
 To install Kyuubi, you need to unpack the tarball. For example,
 
-```{parsed-literal}
-$ tar zxf apache-kyuubi-{{ release }}-bin.tgz
+```text
+$ tar zxf apache-kyuubi-\ |release|\-bin.tgz
 ```
 
-:::{code}
-:class: dropdown, toggle
-
+```{toggle}
 ├── LICENSE
 ├── NOTICE
 ├── RELEASE
@@ -106,7 +107,7 @@ $ tar zxf apache-kyuubi-{{ release }}-bin.tgz
 ├── pid
 ├── web-ui
 └── work
-:::
+```
 
 From top to bottom are:
 
@@ -118,7 +119,8 @@ From top to bottom are:
 - bin: the entry of the Kyuubi server with `kyuubi` as the startup script.
 - conf: all the defaults used by Kyuubi Server itself or creating a session
   with engines.
-- externals engines: contains all kinds of SQL engines that we support
+- externals
+  - engines: contains all kinds of SQL engines that we support
 - licenses: a bunch of licenses included.
 - jars: packages needed by the Kyuubi server.
 - logs: where the logs of the Kyuubi server locates.
@@ -199,7 +201,6 @@ system like `supervisord`.
 ```bash
 bin/kyuubi run
 ```
-
 :::
 
 ## Operate Clients
@@ -225,7 +226,6 @@ Use `--help` to display the usage guide for the kyuubi-beeline tool.
 ```bash
 $ bin/kyuubi-beeline --help
 ```
-
 :::
 
 ### Execute Statements
@@ -265,7 +265,7 @@ started.
 $ bin/kyuubi-beeline -u 'jdbc:kyuubi://localhost:10009/' -n kentyao
 ```
 
-This may change depending on the [engine share level](../deployment/engine_share_level.md)
+This may change depending on the [engine share level](../deployment/engine_share_level.html)
 you set.
 
 ### Close Connections
@@ -281,11 +281,11 @@ Closing: 0: jdbc:kyuubi://localhost:10009/
 ### Stop Engines
 
 Engines are stop by the server automatically according
-[engine lifecycle](../deployment/engine_lifecycle.md) without end users'
+[engine lifecycle](../deployment/engine_lifecycle.html) without end users'
 attention. Terminations of connections do not necessarily mean terminations of
 engines. It depends on both the
-[engine share level](../deployment/engine_share_level.md) and
-[engine lifecycle](../deployment/engine_lifecycle.md).
+[engine share level](../deployment/engine_share_level.html) and
+[engine lifecycle](../deployment/engine_lifecycle.html).
 
 ## Stop Kyuubi
 

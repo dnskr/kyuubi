@@ -15,30 +15,21 @@
   limitations under the License.
 -->
 
-# Clients
+# The Spark SQL Engine Configuration Guide
 
-This section aims to document the APIs, clients and tools for end-users who
-are not necessary to care about deployment at the kyuubi server side.
-
-Kyuubi provides standards-based drivers for JDBC, and ODBC enabling developers
-to build database applications in their language of choice.
-
-In addition, APIs like REST, Thrift, etc., allow developers to access kyuubi
-directly and flexibly.
-
-```{note}
-When you try some of the examples in this section, make sure you have a
-available server.
-```
+Kyuubi aims to bring Spark to end-users who need not qualify with Spark or
+something else related to the big data area. End-users can write SQL queries
+through JDBC against Kyuubi and nothing more. The Kyuubi server-side or the
+corresponding engines could do most of the optimization. On the other hand, we
+don't wholly restrict end-users to special handling of specific cases to benefit
+from the following documentations. Even if you don't use Kyuubi, as a simple
+Spark user, I'm sure you'll find the next articles instructive.
 
 ```{toctree}
 :maxdepth: 2
+:glob:
 
-jdbc/index
-cli/index
-bi_tools/index
-rest/index
-ui/index
-python/index
-advanced/index
+dynamic_allocation
+aqe
+large_query_results
 ```

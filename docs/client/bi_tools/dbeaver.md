@@ -1,18 +1,18 @@
 <!--
-- Licensed to the Apache Software Foundation (ASF) under one or more
-- contributor license agreements.  See the NOTICE file distributed with
-- this work for additional information regarding copyright ownership.
-- The ASF licenses this file to You under the Apache License, Version 2.0
-- (the "License"); you may not use this file except in compliance with
-- the License.  You may obtain a copy of the License at
--
--   http://www.apache.org/licenses/LICENSE-2.0
--
-- Unless required by applicable law or agreed to in writing, software
-- distributed under the License is distributed on an "AS IS" BASIS,
-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-- See the License for the specific language governing permissions and
-- limitations under the License.
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 -->
 
 # DBeaver
@@ -21,19 +21,20 @@
 
 ![DBeaver](https://raw.githubusercontent.com/wiki/dbeaver/dbeaver/images/dbeaver-icon-64x64.png)
 
-[DBeaver](https://dbeaver.io/) is a free multi-platform database tool for developers, database administrators, analysts, and all people who need to work with databases.
-Supports all popular databases as well as kyuubi JDBC.
+[DBeaver](https://dbeaver.io/) is a free multi-platform database tool for
+developers, database administrators, analysts, and all people who need to work
+with databases. Supports all popular databases as well as kyuubi JDBC.
 
-:::{seealso}
-[DBeaver Wiki](https://github.com/dbeaver/dbeaver/wiki)
-:::
+**See also:** [DBeaver Wiki](https://github.com/dbeaver/dbeaver/wiki)
 
 ## Installation
 
-Please go to [Download DBeaver](https://dbeaver.io/download/) page to get and install an appropriate release version for yourself.
+Please go to [Download DBeaver](https://dbeaver.io/download/) page to get and
+install an appropriate release version for yourself.
 
 ```{versionadded} 22.1.0(dbeaver)
-DBeaver officially supports apache kyuubi JDBC driver since 06 Jun 2022 via [PR 16567](https://github.com/dbeaver/dbeaver/issues/16567).
+DBeaver officially supports apache kyuubi JDBC driver since 06 Jun 2022 via
+[PR 16567](https://github.com/dbeaver/dbeaver/issues/16567).
 ```
 
 ## Using DBeaver with Kyuubi
@@ -43,21 +44,25 @@ If you have successfully installed dbeaver, just hit the button to launch it.
 ### New Connection
 
 Firstly, we need to create a database connection against a live kyuubi server.
-You are able to find the kyuubi jdbc driver since dbeaver 22.1.0, as shown in the following figure.
+You are able to find the kyuubi jdbc driver since dbeaver 22.1.0, as shown in
+the following figure.
 
 ![New Database Connection](../../imgs/dbeaver/new_database_connection.png)
 
 ```{note}
-We can also choose Apache Hive or Apache Spark to set up a driver for Kyuubi, because they are compatible with the same client.
+We can also choose Apache Hive or Apache Spark to set up a driver for Kyuubi,
+because they are compatible with the same client.
 ```
 
 ### Configure Connection
 
-Secondly, we configure the JDBC connection settings to format an underlying kyuubi JDBC connection URL string.
+Secondly, we configure the JDBC connection settings to format an underlying
+kyuubi JDBC connection URL string.
 
 #### Basic Connection Settings
 
-The basic connection setting contains a minimal set of items you need to talk with kyuubi server,
+The basic connection setting contains a minimal set of items you need to talk
+with kyuubi server,
 
 - Host - hostname or IP address that the kyuubi server bound with, default: `localhost`.
 - Port - port that the kyuubi server listening to, default: `10009`.
@@ -66,14 +71,18 @@ The basic connection setting contains a minimal set of items you need to talk wi
 
 #### Session Configurations
 
-Session configuration list is an optional part of kyuubi JDBC URLs, which are very helpful to override some configurations of the kyuubi server at session scope.
-The setup page of dbeaver does not contain any text box for such behavior.
-However, we can append the semicolon-separated configuration pairs to the Database/Schema filed leading with a number sign(#).
-Though it's a bit weird, but it works.
+Session configuration list is an optional part of kyuubi JDBC URLs, which are
+very helpful to override some configurations of the kyuubi server at session
+scope. The setup page of dbeaver does not contain any text box for such
+behavior. However, we can append the semicolon-separated configuration pairs to
+the Database/Schema filed leading with a number sign(#). Though it's a bit
+weird, but it works.
 
 ![Configure Database Connection](../../imgs/dbeaver/configure_database_connection.png)
 
-As an example, shown in the picture above, the engine uses 2 gigabytes memory for the driver process of kyuubi engine and will be terminated after idle for 30 seconds.
+As an example, shown in the picture above, the engine uses 2 gigabytes memory
+for the driver process of kyuubi engine and will be terminated after idle for 30
+seconds.
 
 #### Connecting in HA mode
 
@@ -81,17 +90,20 @@ Kyuubi supports HA by service discovery over Apache Zookeeper cluster.
 
 ![Configure Database Connection HA](../../imgs/dbeaver/configure_database_connection_ha.png)
 
-As an example, shown in the above picture, the Host and Port fields can be used to concat the comma separated zookeeper peers,
-while the `serviceDiscoveryMode` and `zooKeeperNamespace` are appended to the Database/Schema field.
+As an example, shown in the above picture, the Host and Port fields can be used
+to concat the comma separated zookeeper peers, while the `serviceDiscoveryMode`
+and `zooKeeperNamespace` are appended to the Database/Schema field.
 
 ### Test Connection
 
-It is not necessary but recommended to click `Test Connection` to verify the connection is set correctly.
-If something wrong happens at the client side or server side, we can debug ahead with the error message.
+It is not necessary but recommended to click `Test Connection` to verify the
+connection is set correctly. If something wrong happens at the client side or
+server side, we can debug ahead with the error message.
 
 ### SQL Operations
 
-Now, we can use the SQL editor to write queries to interact with Kyuubi server through the connection.
+Now, we can use the SQL editor to write queries to interact with Kyuubi server
+through the connection.
 
 ```sql
 DESC NAMESPACE DEFAULT;
@@ -114,4 +126,4 @@ DROP TABLE spark_catalog.`default`.SRC;
 
 ## Client Authentication
 
-For kerberized kyuubi clusters, please refer to [Kerberos Authentication](../advanced/kerberos.md#bi-tools) for more information.
+For kerberized kyuubi clusters, please refer to [Kerberos Authentication](../advanced/kerberized_kyuubi.html#bi-tools) for more information.

@@ -1,18 +1,18 @@
 <!--
-- Licensed to the Apache Software Foundation (ASF) under one or more
-- contributor license agreements.  See the NOTICE file distributed with
-- this work for additional information regarding copyright ownership.
-- The ASF licenses this file to You under the Apache License, Version 2.0
-- (the "License"); you may not use this file except in compliance with
-- the License.  You may obtain a copy of the License at
--
--   http://www.apache.org/licenses/LICENSE-2.0
--
-- Unless required by applicable law or agreed to in writing, software
-- distributed under the License is distributed on an "AS IS" BASIS,
-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-- See the License for the specific language governing permissions and
-- limitations under the License.
+  - Licensed to the Apache Software Foundation (ASF) under one or more
+  - contributor license agreements.  See the NOTICE file distributed with
+  - this work for additional information regarding copyright ownership.
+  - The ASF licenses this file to You under the Apache License, Version 2.0
+  - (the "License"); you may not use this file except in compliance with
+  - the License.  You may obtain a copy of the License at
+  -
+  -   http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
 -->
 
 # Kyuubi AuthZ Plugin For Spark SQL
@@ -79,7 +79,7 @@ security of production environments
 
 :::{note}
 How do we modify the Spark engine configurations please refer to the
-documentation [Spark Configurations](../../../configuration/settings.md#spark-configurations)
+documentation [Spark Configurations](../../../configuration/settings.html#spark-configurations)
 :::
 
 #### Restrict Session Level Config
@@ -109,9 +109,9 @@ spark.kyuubi.conf.restricted.list  spark.sql.adaptive.enabled,spark.sql.adaptive
 
 :::{note}
 1. Note that config `spark.sql.runSQLOnFiles` values and config
-`spark.sql.extensions` values are by default in the engine restriction
-configuration list
+   `spark.sql.extensions` values are by default in the engine restriction
+   configuration list
 2. A set statement with key equal to `spark.sql.optimizer.excludedRules` and
-value containing `org.apache.kyuubi.plugin.spark.authz.ranger.*` also does
-not allow modification.
+   value containing `org.apache.kyuubi.plugin.spark.authz.ranger.*` also does
+   not allow modification.
 :::
