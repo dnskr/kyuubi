@@ -195,6 +195,20 @@ public class DynConstructors {
     }
 
     public Builder hiddenImpl(Class<?>... types) {
+      // don't do any work if an implementation has been found
+      if (ctor != null) {
+        return this;
+      }
+      // A builder made by builder() has no base class, and forwarding that null would reach
+      // getDeclaredConstructor. Reaching this overload at all takes either no arguments or an
+      // explicit Class<?>[], which is also what a Scala `: _*` splat passes; a loose Class
+      // argument binds to hiddenImpl(Class, Class...) with that class as the target instead.
+      // iceberg-common deprecated this overload in 1.6.0 and removed it in 1.7.0
+      // (apache/iceberg#10818) over that ambiguity.
+      if (baseClass == null) {
+        throw new IllegalStateException(
+            "Cannot look up a hidden constructor without a base class, use builder(Class) instead");
+      }
       hiddenImpl(baseClass, types);
       return this;
     }
@@ -330,13 +344,16 @@ public class DynConstructors {
     StringBuilder sb = new StringBuilder();
     sb.append(targetClass.getName()).append("(");
     boolean first = true;
-    for (Class<?> type : types) {
+    // A caller probing an optional dependency passes down the null DynClasses.orNull() handed it,
+    // and getConstructor reads a null array as no arguments at all. Both are ordinary misses there,
+    // so naming the candidate must not turn either into a throw.
+    for (Class<?> type : types == null ? new Class<?>[0] : types) {
       if (first) {
         first = false;
       } else {
         sb.append(",");
       }
-      sb.append(type.getName());
+      sb.append(type == null ? "null" : type.getName());
     }
     sb.append(")");
     return sb.toString();

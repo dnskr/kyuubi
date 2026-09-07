@@ -170,9 +170,63 @@ public class DynConstructorsTest {
   @Test
   public void testHiddenImplPropagatesUnrelatedFailures() {
     // a RuntimeException that is not InaccessibleObjectException must still escape the
-    // builder instead of being counted as a candidate miss
-    // a builder with no class set dereferences the null base class inside the try block
+    // builder instead of being counted as a candidate miss.
+    // a null target class dereferences null inside the try block
     assertThrows(
-        NullPointerException.class, () -> DynConstructors.builder().hiddenImpl((Class<?>[]) null));
+        NullPointerException.class,
+        () -> DynConstructors.builder().hiddenImpl((Class<Object>) null, new Class<?>[0]));
+  }
+
+  @Test
+  public void testHiddenImplWithoutBaseClassFailsFast() {
+    IllegalStateException thrown =
+        assertThrows(IllegalStateException.class, () -> DynConstructors.builder().hiddenImpl());
+
+    assertTrue(
+        thrown.getMessage().contains("without a base class"),
+        () -> "unexpected message: " + thrown.getMessage());
+  }
+
+  @Test
+  public void testHiddenImplWithoutBaseClassIsSkippedOnceFound() throws NoSuchMethodException {
+    // every other impl overload short-circuits once a constructor is found, so a class-less
+    // builder that already matched keeps working rather than failing on the base-class lookup
+    DynConstructors.Ctor<String> ctor =
+        DynConstructors.builder().impl("java.lang.String").hiddenImpl().buildChecked();
+
+    assertEquals(String.class, ctor.getConstructedClass());
+  }
+
+  @Test
+  public void testNullArgumentTypeIsAnOrdinaryMiss() {
+    // DynClasses.orNull() hands back null for a class the running dependency does not provide, and
+    // callers pass that straight into impl, so the chain has to fall through to the next candidate
+    DynConstructors.Ctor<FixedArity> ctor =
+        DynConstructors.builder()
+            .impl(FixedArity.class, (Class<?>) null)
+            .impl(FixedArity.class, String.class)
+            .build();
+
+    assertEquals("value", ctor.newInstance("value").value);
+
+    RuntimeException thrown =
+        assertThrows(
+            RuntimeException.class,
+            () -> DynConstructors.builder().impl(FixedArity.class, (Class<?>) null).build());
+
+    assertTrue(
+        thrown.getMessage().contains("Missing " + FixedArity.class.getName() + "(null)"),
+        () -> "unexpected message: " + thrown.getMessage());
+
+    // getConstructor reads a null array as no arguments at all, so the candidate name has to as
+    // well
+    RuntimeException noArgs =
+        assertThrows(
+            RuntimeException.class,
+            () -> DynConstructors.builder().impl(FixedArity.class, (Class<?>[]) null).build());
+
+    assertTrue(
+        noArgs.getMessage().contains("Missing " + FixedArity.class.getName() + "()"),
+        () -> "unexpected message: " + noArgs.getMessage());
   }
 }
