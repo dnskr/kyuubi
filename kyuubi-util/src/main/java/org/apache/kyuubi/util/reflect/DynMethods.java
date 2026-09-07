@@ -31,6 +31,11 @@ public class DynMethods {
 
   private DynMethods() {}
 
+  // The type is absent from Java 8, which this module compiles against, so it is matched
+  // by name where it is caught.
+  private static final String INACCESSIBLE_OBJECT_EXCEPTION =
+      "java.lang.reflect.InaccessibleObjectException";
+
   /**
    * Convenience wrapper class around {@link Method}.
    *
@@ -54,7 +59,12 @@ public class DynMethods {
     @SuppressWarnings("unchecked")
     public <R> R invokeChecked(Object target, Object... args) throws Exception {
       try {
-        if (argLength < 0) {
+        // The copy exists only to change arity: it drops extra arguments and null-pads a
+        // short list. At equal arity it changes nothing, so hand Method.invoke the caller's
+        // array as the varargs branch always has. The guard has to stay ==: passing through
+        // when longer would stop truncating, and copying only when longer, the way
+        // DynConstructors.newInstanceChecked does, would stop padding.
+        if (argLength < 0 || args.length == argLength) {
           return (R) method.invoke(target, args);
         } else {
           return (R) method.invoke(target, Arrays.copyOfRange(args, 0, argLength));
@@ -391,6 +401,11 @@ public class DynMethods {
     /**
      * Checks for a method implementation.
      *
+     * <p>Neither upstream copy catches InaccessibleObjectException from {@code setAccessible}, so
+     * under strong encapsulation one inaccessible method aborts the whole fallback chain. This copy
+     * skips it like the other lookup failures instead of letting it escape. The builder keeps no
+     * per-candidate detail, so the exception's "does not opens" text is discarded with it.
+     *
      * @param targetClass a class instance
      * @param methodName name of a method (different from constructor)
      * @param argClasses argument classes for the method
@@ -410,6 +425,14 @@ public class DynMethods {
         this.method = new UnboundMethod(hidden, name);
       } catch (SecurityException | NoSuchMethodException e) {
         // unusable or not the right implementation
+      } catch (RuntimeException e) {
+        // setAccessible on a member of a package that is not open reports
+        // InaccessibleObjectException: since JDK 9 for named modules, since JDK 16 by
+        // default from the unnamed module; discard it as a candidate miss like the
+        // failures above instead of letting it escape the fallback chain.
+        if (!INACCESSIBLE_OBJECT_EXCEPTION.equals(e.getClass().getName())) {
+          throw e;
+        }
       }
       return this;
     }

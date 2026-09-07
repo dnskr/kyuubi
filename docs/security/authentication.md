@@ -39,7 +39,6 @@ The related configurations can be found at
 :maxdepth: 2
 
 kerberos
-../client/advanced/kerberos
 ldap
 jdbc
 ../extensions/server/authentication

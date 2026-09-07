@@ -36,8 +36,6 @@ import datetime
 
 sys.path.insert(0, os.path.abspath("."))
 
-import sphinx_markdown_tables
-
 source_suffix = {
     ".rst": "restructuredtext",
     ".txt": "restructuredtext",
@@ -70,7 +68,6 @@ extensions = [
     "sphinx.ext.mathjax",
     "myst_parser",
     "sphinx_copybutton",
-    "sphinx_markdown_tables",
     "sphinx_togglebutton",
     "notfound.extension",
     "sphinxemoji.sphinxemoji",
@@ -85,7 +82,7 @@ myst_substitutions = {
     "release": release
 }
 
-myst_heading_anchors = 3
+myst_heading_anchors = 4
 
 master_doc = "index"
 

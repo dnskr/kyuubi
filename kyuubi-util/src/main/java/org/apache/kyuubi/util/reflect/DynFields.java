@@ -31,11 +31,17 @@ public class DynFields {
 
   private DynFields() {}
 
+  // The type is absent from Java 8, which this module compiles against, so it is matched
+  // by name where it is caught.
+  private static final String INACCESSIBLE_OBJECT_EXCEPTION =
+      "java.lang.reflect.InaccessibleObjectException";
+
   /**
    * Convenience wrapper class around {@link Field}.
    *
-   * <p>Allows callers to invoke the wrapped method with all Exceptions wrapped by RuntimeException,
-   * or with a single Exception catch block.
+   * <p>Allows callers to access the wrapped field with {@code IllegalAccessException} wrapped by
+   * RuntimeException. Other throwables {@link Field} raises, such as the {@code
+   * IllegalArgumentException} for an incompatible target, are not wrapped.
    */
   public static class UnboundField<T> {
     private final Field field;
@@ -70,11 +76,11 @@ public class DynFields {
     }
 
     /**
-     * Returns this method as a BoundMethod for the given receiver.
+     * Returns this field as a BoundField for the given receiver.
      *
      * @param target an Object on which to get or set this field
      * @return a {@link BoundField} for this field and the target
-     * @throws IllegalStateException if the method is static
+     * @throws IllegalStateException if the field is static
      * @throws IllegalArgumentException if the receiver's class is incompatible
      */
     public BoundField<T> bind(Object target) {
@@ -94,7 +100,7 @@ public class DynFields {
      * Returns this field as a StaticField.
      *
      * @return a {@link StaticField} for this field
-     * @throws IllegalStateException if the method is not static
+     * @throws IllegalStateException if the field is not static
      */
     public StaticField<T> asStatic() {
       if (!isStatic()) {
@@ -262,7 +268,7 @@ public class DynFields {
      * Checks for an implementation.
      *
      * @param targetClass a class instance
-     * @param fieldName name of a field (different from constructor)
+     * @param fieldName name of a field
      * @return this Builder for method chaining
      * @see Class#forName(String)
      * @see Class#getField(String)
@@ -286,7 +292,7 @@ public class DynFields {
      * Checks for a hidden implementation, first finding the class by name.
      *
      * @param className name of a class
-     * @param fieldName name of a field (different from constructor)
+     * @param fieldName name of a field
      * @return this Builder for method chaining
      * @see Class#forName(String)
      * @see Class#getField(String)
@@ -310,8 +316,14 @@ public class DynFields {
     /**
      * Checks for a hidden implementation.
      *
+     * <p>Upstream iceberg-common, which this class was copied from, does not catch
+     * InaccessibleObjectException from {@code setAccessible}, so under strong encapsulation one
+     * inaccessible field aborts the whole fallback chain. This copy counts it as a miss like the
+     * other lookup failures, and records the exception with the candidate so its "does not opens"
+     * text survives into the build failure.
+     *
      * @param targetClass a class instance
-     * @param fieldName name of a field (different from constructor)
+     * @param fieldName name of a field
      * @return this Builder for method chaining
      * @see Class#forName(String)
      * @see Class#getField(String)
@@ -330,6 +342,17 @@ public class DynFields {
       } catch (SecurityException | NoSuchFieldException e) {
         // unusable
         candidates.add(targetClass.getName() + "." + fieldName);
+      } catch (RuntimeException e) {
+        // setAccessible on a member of a package that is not open reports
+        // InaccessibleObjectException: since JDK 9 for named modules, since JDK 16 by
+        // default from the unnamed module; count it as a candidate miss like the
+        // failures above instead of letting it escape the fallback chain.
+        if (!INACCESSIBLE_OBJECT_EXCEPTION.equals(e.getClass().getName())) {
+          throw e;
+        }
+        // Keep the reason: the message names the module and package to open, and a
+        // single-candidate builder has no other way to surface it.
+        candidates.add(targetClass.getName() + "." + fieldName + " [" + e + "]");
       }
       return this;
     }
@@ -355,13 +378,13 @@ public class DynFields {
     }
 
     /**
-     * Returns the first valid implementation as a BoundMethod or throws a NoSuchMethodException if
+     * Returns the first valid implementation as a BoundField or throws a NoSuchFieldException if
      * there is none.
      *
      * @param target an Object on which to get and set the field
      * @param <T> Java class stored in the field
      * @return a {@link BoundField} with a valid implementation and target
-     * @throws IllegalStateException if the method is static
+     * @throws IllegalStateException if the field is static
      * @throws IllegalArgumentException if the receiver's class is incompatible
      * @throws NoSuchFieldException if no implementation was found
      */
@@ -370,7 +393,7 @@ public class DynFields {
     }
 
     /**
-     * Returns the first valid implementation as a UnboundField or throws a NoSuchFieldException if
+     * Returns the first valid implementation as a UnboundField or throws a RuntimeException if
      * there is none.
      *
      * @param <T> Java class stored in the field
@@ -390,13 +413,13 @@ public class DynFields {
     }
 
     /**
-     * Returns the first valid implementation as a BoundMethod or throws a RuntimeException if there
+     * Returns the first valid implementation as a BoundField or throws a RuntimeException if there
      * is none.
      *
      * @param target an Object on which to get and set the field
      * @param <T> Java class stored in the field
      * @return a {@link BoundField} with a valid implementation and target
-     * @throws IllegalStateException if the method is static
+     * @throws IllegalStateException if the field is static
      * @throws IllegalArgumentException if the receiver's class is incompatible
      * @throws RuntimeException if no implementation was found
      */
@@ -410,7 +433,7 @@ public class DynFields {
      *
      * @param <T> Java class stored in the field
      * @return a {@link StaticField} with a valid implementation
-     * @throws IllegalStateException if the method is not static
+     * @throws IllegalStateException if the field is not static
      * @throws NoSuchFieldException if no implementation was found
      */
     public <T> StaticField<T> buildStaticChecked() throws NoSuchFieldException {
@@ -423,7 +446,7 @@ public class DynFields {
      *
      * @param <T> Java class stored in the field
      * @return a {@link StaticField} with a valid implementation
-     * @throws IllegalStateException if the method is not static
+     * @throws IllegalStateException if the field is not static
      * @throws RuntimeException if no implementation was found
      */
     public <T> StaticField<T> buildStatic() {
