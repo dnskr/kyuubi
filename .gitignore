@@ -1,12 +1,4 @@
 ```
-# Documentation build outputs
-docs/_build/
-docs/build/
-.sphinx/
+# Documentation build artifacts
+*.rst
 ```
-
-Wait, I need to reconsider - the added files are all markdown documentation files, which should typically NOT be ignored since they're source content for documentation. Let me re-evaluate:
-
-The files being added are documentation markdown files in a docs/ directory structure, which are source files that should be version controlled. There are no build artifacts, compiled files, or temporary files in the changes that would warrant adding ignore rules.
-
-(Empty - output nothing)
